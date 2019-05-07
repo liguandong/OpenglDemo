@@ -3,10 +3,10 @@ package poco.cn.medialibs.player2;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.FloatRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.math.MathUtils;
+import androidx.annotation.FloatRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.math.MathUtils;
 
 import poco.cn.medialibs.utils.FileUtil;
 
