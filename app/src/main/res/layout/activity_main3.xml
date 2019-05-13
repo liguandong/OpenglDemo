@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ratio2.Main3Activity">
+
+
+    <Button
+        android:id="@+id/textView1_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="1"
+        android:layout_marginTop="16dp"
+        android:text="1_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/textView16_9"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <Button
+        android:id="@+id/textView16_9"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="1"
+        android:text="16_9"
+        app:layout_constraintLeft_toRightOf="@+id/textView1_1"
+        app:layout_constraintRight_toLeftOf="@+id/textView9_16"
+        app:layout_constraintTop_toTopOf="@+id/textView1_1"/>
+
+    <Button
+        android:id="@+id/textView9_16"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="1"
+        android:text="9_16"
+        app:layout_constraintLeft_toRightOf="@+id/textView16_9"
+        app:layout_constraintRight_toLeftOf="@+id/textView3_4"
+        app:layout_constraintTop_toTopOf="@+id/textView16_9"/>
+
+    <Button
+        android:id="@+id/textView3_4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="1"
+        android:text="3_4"
+        app:layout_constraintLeft_toRightOf="@+id/textView9_16"
+        app:layout_constraintRight_toLeftOf="@+id/textView235_1"
+        app:layout_constraintTop_toTopOf="@+id/textView9_16"/>
+
+    <Button
+        android:id="@+id/textView235_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="1"
+        android:text="235_1"
+        app:layout_constraintLeft_toRightOf="@+id/textView3_4"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView3_4"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="textView1_1,textView16_9,textView9_16,textView3_4,textView235_1"/>
+
+    <Button
+        android:id="@+id/fullIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="FULL_IN"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enterFrame"/>
+
+    <Button
+        android:id="@+id/fullOut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="FULL_OUT"
+        app:layout_constraintBottom_toBottomOf="@+id/fullIn"
+        app:layout_constraintStart_toEndOf="@+id/fullIn"/>
+
+    <Button
+        android:id="@+id/rotate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Rotate"
+        app:layout_constraintBottom_toBottomOf="@+id/fullOut"
+        app:layout_constraintStart_toEndOf="@+id/fullOut"/>
+
+    <Button
+        android:id="@+id/enterFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Enter_Frame"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/glSurfaceView"/>
+
+    <Button
+        android:id="@+id/exitFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Exit_Frame"
+        app:layout_constraintStart_toEndOf="@+id/enterFrame"
+        app:layout_constraintTop_toTopOf="@+id/enterFrame"/>
+
+    <poco.cn.opengldemo.ratio2.GlFrameView2
+        android:id="@+id/glSurfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintDimensionRatio="1.3"
+        app:layout_constraintTop_toBottomOf="@+id/textView1_1">
+    </poco.cn.opengldemo.ratio2.GlFrameView2>
+
+    <Button
+        android:id="@+id/changeImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="changeImg"
+        app:layout_constraintStart_toEndOf="@+id/exitFrame"
+        app:layout_constraintTop_toTopOf="@+id/exitFrame"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

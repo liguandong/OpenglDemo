@@ -1,4 +1,4 @@
-package poco.cn.opengldemo.video.draw;
+package poco.cn.opengldemo.base;
 
 import android.content.Context;
 import android.opengl.GLES20;
@@ -9,9 +9,7 @@ import poco.cn.medialibs.gles.GlUtil;
 
 /**
  * Created by lgd on 2019/4/19.
- * <p>
  * 读取顶点数据——执行顶点着色器——组装图元——光栅化图元——执行片元着色器——写入帧缓冲区——显示到屏幕上。
- * <p>
  * 加载顶点和片元着色器
  * 确定需要绘制图形的坐标和颜色数据
  * 创建program对象，连接顶点和片元着色器，链接program对象。

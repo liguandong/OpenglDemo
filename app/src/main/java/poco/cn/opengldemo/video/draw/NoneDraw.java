@@ -6,6 +6,7 @@ import android.opengl.Matrix;
 
 import poco.cn.medialibs.gles.GlUtil;
 import poco.cn.opengldemo.R;
+import poco.cn.opengldemo.base.BaseDraw;
 
 /**
  * Created by lgd on 2019/4/24.
@@ -24,7 +25,7 @@ public class NoneDraw extends BaseDraw
 //        mTexMatrix[5] = -1;
 //        mTexMatrix[13] = 1;
 
-        createProgram(R.raw.vertex_shader_none, R.raw.fragment_origin_shader);
+        createProgram(R.raw.vertex_shader_origin, R.raw.fragment_shader_origin);
     }
 
 

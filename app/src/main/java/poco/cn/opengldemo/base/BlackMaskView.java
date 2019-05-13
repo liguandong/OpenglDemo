@@ -1,4 +1,4 @@
-package poco.cn.opengldemo.video.view;
+package poco.cn.opengldemo.base;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -6,12 +6,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import androidx.annotation.Keep;
-import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+
+import androidx.annotation.Keep;
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 
 /**
  * Created by: fwc

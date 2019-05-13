@@ -17,6 +17,8 @@ import poco.cn.medialibs.player2.MultiPlayer;
 import poco.cn.medialibs.player2.MultiSurface;
 import poco.cn.medialibs.player2.OnPlayListener;
 import poco.cn.medialibs.player2.PlayInfo;
+import poco.cn.opengldemo.base.BlackMaskView;
+import poco.cn.opengldemo.base.PlayRatio;
 import poco.cn.opengldemo.utils.ShareData;
 
 /**

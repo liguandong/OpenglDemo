@@ -1,9 +1,9 @@
-package poco.cn.opengldemo.video.view;
-
-import androidx.annotation.IntDef;
+package poco.cn.opengldemo.base;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.IntDef;
 
 /**
  * Created by: fwc

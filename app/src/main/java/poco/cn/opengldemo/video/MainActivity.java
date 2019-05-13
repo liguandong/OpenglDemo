@@ -1,4 +1,4 @@
-package poco.cn.opengldemo;
+package poco.cn.opengldemo.video;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import poco.cn.opengldemo.R;
 import poco.cn.opengldemo.utils.ShareData;
 import poco.cn.opengldemo.video.view.GLVideoViewV2;
 import poco.cn.opengldemo.video.view.VideoBaseInfo;
