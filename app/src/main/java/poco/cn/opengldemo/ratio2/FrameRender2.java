@@ -12,6 +12,7 @@ import javax.microedition.khronos.opengles.GL10;
 import androidx.annotation.NonNull;
 import poco.cn.medialibs.gles.GlUtil;
 import poco.cn.opengldemo.ratio.FrameDraw;
+import poco.cn.opengldemo.utils.GlMatrixTools;
 
 /**
  * Created by lgd on 2019/5/7.
@@ -24,6 +25,8 @@ public class FrameRender2 implements GLSurfaceView.Renderer
     private int mTextureId = GlUtil.NO_TEXTURE;
     private Bitmap mBitmap;
 
+
+    private GlMatrixTools mMatrixTools;
 //    RenderInfo
 
     private final float[] mProjectMatrix = new float[16];
@@ -37,10 +40,10 @@ public class FrameRender2 implements GLSurfaceView.Renderer
 
     /**
      * 是否是铺满 Surface 播放，主要用在全屏播放和进入画幅选择页面时
-     *
-     *    if true  howRatio 只是在viewRatio的区域限制
-     *
-     *    if false 在showRatio是实际视区, videoRatio需要投影矩阵CENER_CROP映射在视区，乘以缩放矩阵
+     * <p>
+     * if true  howRatio 只是在viewRatio的区域限制
+     * <p>
+     * if false 在showRatio是实际视区, videoRatio需要投影矩阵CENER_CROP映射在视区，乘以缩放矩阵
      */
     private boolean isFullMode;
 
@@ -76,6 +79,8 @@ public class FrameRender2 implements GLSurfaceView.Renderer
         mContext = context;
         Matrix.setIdentityM(mTempScaleMatrix, 0);
         Matrix.setIdentityM(mProjectMatrix, 0);
+
+        mMatrixTools = new GlMatrixTools();
     }
 
     public void setBitmap(Bitmap bitmap)
@@ -129,16 +134,59 @@ public class FrameRender2 implements GLSurfaceView.Renderer
         {
             Matrix.setIdentityM(mProjectMatrix, 0);
             float ratio = mViewWidth / (float) mViewHeight;
-            //下面也可以使用摄像机和投影方式，    大致原理一样，顶点缩放x轴或y轴保持不变形
-            if (showRatio > ratio)
+            if (ratio > 1f && showRatio > 1)
             {
-                //自行画图，  showRatio是内框，ratio是外框， 现在x轴铺满ratio， 缩放y轴
-                Matrix.scaleM(mProjectMatrix, 0, 1f, ratio, 1f);
-            } else
+                // y轴缩放到1，或者x轴从1缩放到ratio
+                float minScale = Math.min(ratio, showRatio);
+                Matrix.scaleM(mProjectMatrix, 0, minScale, minScale, 1f);
+            } else if(ratio <= 1f && showRatio <1)
             {
-                //showRatio y轴比例大，保持y轴不变，缩放x轴
-                Matrix.scaleM(mProjectMatrix, 0, 1 / ratio, 1f, 1f);
+                // x轴缩放到1，或者y轴从1缩放到ratio
+                float minScale = Math.min(1 / showRatio, 1 / ratio);
+                Matrix.scaleM(mProjectMatrix, 0, minScale, minScale, 1f);
             }
+
+
+//            if (showRatio > ratio)
+//            {
+//                //x轴需要铺满
+//                if(ratio > 1){
+//                    Matrix.scaleM(mProjectMatrix, 0, 1 / ratio, 1 / ratio, 1f);
+//                }
+//            } else
+//            {
+//                //y轴铺满，x缩放ratio
+//                if(ratio < 1){
+//                    Matrix.scaleM(mProjectMatrix, 0, 1 / ratio, 1 / ratio, 1f);
+//                }
+//            }
+
+//            if(showRatio > ratio){
+//
+//            }else{
+//
+//            }
+
+
+            // FIX_CENTER，外框是ratio，内框正方形ImagePlayInfo2[-1,-1] (包含着showRatio)
+//            if (showRatio > ratio)
+//            {
+//                //showRatio的可以铺满ratio的x轴，y轴映射缩放防止变形
+//                Matrix.scaleM(mProjectMatrix, 0, 1f, ratio, 1f);
+//                if (showRatio < 1)
+//                {
+//                    //showRatio x轴需要满到1
+//                    Matrix.scaleM(mProjectMatrix, 0, 1f / showRatio, 1 / showRatio, 1f);
+//                }
+//            } else
+//            {
+//                // 内框坐标y轴铺满，x轴映射缩放防止变形。
+//                Matrix.scaleM(mProjectMatrix, 0, 1 / ratio, 1, 1f);
+//                if (showRatio > 1)
+//                {
+//                    Matrix.scaleM(mProjectMatrix, 0, showRatio, showRatio, 1f);
+//                }
+//            }
         }
     }
 
@@ -168,7 +216,15 @@ public class FrameRender2 implements GLSurfaceView.Renderer
         GLES20.glViewport(0, 0, width, height);
         mViewWidth = width;
         mViewHeight = height;
-
+        float ratio = mViewWidth / (float) mViewHeight;
+        if (ratio > 1)
+        {
+            mMatrixTools.frustum(-ratio, ratio, -1, 1, 3, 7);
+        } else
+        {
+            mMatrixTools.frustum(-1, 1, -1 / ratio, 1 / ratio, 3, 7);
+        }
+        mMatrixTools.setCamera(0, 0, 3, 0, 0, 0, 0, 1, 0);
         initShowSize();
         initProject();
     }
@@ -202,7 +258,8 @@ public class FrameRender2 implements GLSurfaceView.Renderer
 
 //            Matrix.scaleM(mTexMatrix,0,2f,2f,1f);
 //            Matrix.translateM(mTexMatrix,0,0.1f,0.1f,0f);
-            mFrameDraw.draw(mTextureId, mTempModelMatrix, mTempTexMatrix);
+            mFrameDraw.draw(mTextureId, mMatrixTools.getFinalMatrix(mTempModelMatrix), mTempTexMatrix);
+//            mFrameDraw.draw(mTextureId, mTempModelMatrix, mTempTexMatrix);
         }
     }
 
