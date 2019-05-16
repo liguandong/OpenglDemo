@@ -145,48 +145,6 @@ public class FrameRender2 implements GLSurfaceView.Renderer
                 float minScale = Math.min(1 / showRatio, 1 / ratio);
                 Matrix.scaleM(mProjectMatrix, 0, minScale, minScale, 1f);
             }
-
-
-//            if (showRatio > ratio)
-//            {
-//                //x轴需要铺满
-//                if(ratio > 1){
-//                    Matrix.scaleM(mProjectMatrix, 0, 1 / ratio, 1 / ratio, 1f);
-//                }
-//            } else
-//            {
-//                //y轴铺满，x缩放ratio
-//                if(ratio < 1){
-//                    Matrix.scaleM(mProjectMatrix, 0, 1 / ratio, 1 / ratio, 1f);
-//                }
-//            }
-
-//            if(showRatio > ratio){
-//
-//            }else{
-//
-//            }
-
-
-            // FIX_CENTER，外框是ratio，内框正方形ImagePlayInfo2[-1,-1] (包含着showRatio)
-//            if (showRatio > ratio)
-//            {
-//                //showRatio的可以铺满ratio的x轴，y轴映射缩放防止变形
-//                Matrix.scaleM(mProjectMatrix, 0, 1f, ratio, 1f);
-//                if (showRatio < 1)
-//                {
-//                    //showRatio x轴需要满到1
-//                    Matrix.scaleM(mProjectMatrix, 0, 1f / showRatio, 1 / showRatio, 1f);
-//                }
-//            } else
-//            {
-//                // 内框坐标y轴铺满，x轴映射缩放防止变形。
-//                Matrix.scaleM(mProjectMatrix, 0, 1 / ratio, 1, 1f);
-//                if (showRatio > 1)
-//                {
-//                    Matrix.scaleM(mProjectMatrix, 0, showRatio, showRatio, 1f);
-//                }
-//            }
         }
     }
 
@@ -252,12 +210,11 @@ public class FrameRender2 implements GLSurfaceView.Renderer
             Matrix.multiplyMM(mTempModelMatrix, 0, mProjectMatrix, 0, mTempModelMatrix, 0);
             if (!isFullMode)
             {
+                //视口不同要缩放
                 Matrix.multiplyMM(mTempModelMatrix, 0, mTempScaleMatrix, 0, mTempModelMatrix, 0);
                 GLES20.glViewport(mLeftMargin, mTopMargin, mShowWidth, mShowHeight);
             }
 
-//            Matrix.scaleM(mTexMatrix,0,2f,2f,1f);
-//            Matrix.translateM(mTexMatrix,0,0.1f,0.1f,0f);
             mFrameDraw.draw(mTextureId, mMatrixTools.getFinalMatrix(mTempModelMatrix), mTempTexMatrix);
 //            mFrameDraw.draw(mTextureId, mTempModelMatrix, mTempTexMatrix);
         }

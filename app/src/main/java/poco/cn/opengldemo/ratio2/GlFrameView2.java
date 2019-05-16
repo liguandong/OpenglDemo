@@ -7,14 +7,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import poco.cn.opengldemo.utils.ShareData;
 import poco.cn.opengldemo.base.BlackMaskView;
 import poco.cn.opengldemo.base.PlayRatio;
+import poco.cn.opengldemo.utils.ShareData;
 
 /**
  * Created by lgd on 2019/5/8.
@@ -43,6 +44,7 @@ public class GlFrameView2 extends FrameLayout
     private int mSurfaceWidth;
     private int mSurfaceHeight;
     private float mShowRatio;
+    private FrameNinePalacesView ninePalacesView;
 
 
     public GlFrameView2(@NonNull Context context)
@@ -67,7 +69,54 @@ public class GlFrameView2 extends FrameLayout
         fl = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         addView(mBlackMaskView, fl);
 
+        ninePalacesView = new FrameNinePalacesView(getContext());
+        ninePalacesView.setVisibility(View.GONE);
+        fl = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        addView(ninePalacesView, fl);
+        ninePalacesView.setOnViewDragListener(new FrameNinePalacesView.OnViewListener()
+        {
+            @Override
+            public void onDrag(float dx, float dy)
+            {
+                //也可以用 mSurfaceWidth 和  mSurfaceHeight
+                int min = Math.min(ninePalacesView.getRealWidth(),ninePalacesView.getRealHeight());
+                imagePlayInfo.translate(dx / min, -dy/min);
+                glSurfaceView.requestRender();
+            }
+
+            @Override
+            public void onScaleChange(float scale, float focusX, float focusY)
+            {
+                //也可以用 mSurfaceWidth 和  mSurfaceHeight
+                int min = Math.min(ninePalacesView.getRealWidth(),ninePalacesView.getRealHeight());
+                focusX = (focusX - ninePalacesView.getWidth() / 2) / (float) min;
+                focusY = (ninePalacesView.getHeight() / 2 - focusY) / (float) min;
+                imagePlayInfo.scale(scale, focusX, focusY);
+                glSurfaceView.requestRender();
+            }
+
+            @Override
+            public void onScaleEnd()
+            {
+
+            }
+
+            @Override
+            public void onClick()
+            {
+
+            }
+
+            @Override
+            public void onUp()
+            {
+
+            }
+        });
+
         enterFrameMode();
+
+
     }
 
     @Override
@@ -103,7 +152,7 @@ public class GlFrameView2 extends FrameLayout
      */
     public void scaleToMin()
     {
-        imagePlayInfo.scaleToMin( mRefreshRunnable);
+        imagePlayInfo.scaleToMin(mRefreshRunnable);
     }
 
     /**
@@ -131,6 +180,7 @@ public class GlFrameView2 extends FrameLayout
      */
     public void enterFrameMode()
     {
+        ninePalacesView.setVisibility(View.VISIBLE);
         ObjectAnimator animator = ObjectAnimator.ofFloat(mBlackMaskView, "maskAlpha", 1, 0.6f);
         animator.addListener(new AnimatorListenerAdapter()
         {
@@ -158,6 +208,7 @@ public class GlFrameView2 extends FrameLayout
      */
     public void exitFrameMode()
     {
+        ninePalacesView.setVisibility(View.GONE);
         mBlackMaskView.setColor(0xff0d0d0d);
         mBlackMaskView.setMaskAlpha(0.6f);
         ObjectAnimator animator = ObjectAnimator.ofFloat(mBlackMaskView, "maskAlpha", 0.6f, 1f);
@@ -182,9 +233,6 @@ public class GlFrameView2 extends FrameLayout
         {
             imagePlayInfo.setShowRatio2(getShowRatio());
             frameRender.setImageInfo(imagePlayInfo);
-//            float vRatio = mViewWidth * 1.0f / mViewHeight;
-//            imagePlayInfo.init(vRatio, getShowRatio());
-//            frameRender.setMatrix(imagePlayInfo.modelMatrix, imagePlayInfo.texMatrix);
         }
         glSurfaceView.requestRender();
     }
@@ -196,7 +244,8 @@ public class GlFrameView2 extends FrameLayout
      * @param width  view宽度
      * @param height view高度
      */
-    public void setViewSize(int width, int height) {
+    public void setViewSize(int width, int height)
+    {
         mViewWidth = width;
         mViewHeight = height;
     }
@@ -271,9 +320,11 @@ public class GlFrameView2 extends FrameLayout
 
             if (mSurfaceTop != 0)
             {
+                ninePalacesView.setPadding(0, mSurfaceTop, 0, mSurfaceTop);
                 mBlackMaskView.startAnim(0, mSurfaceTop, 0, mSurfaceTop);
             } else if (mSurfaceLeft != 0)
             {
+                ninePalacesView.setPadding(mSurfaceLeft, 0, mSurfaceLeft, 0);
                 mBlackMaskView.startAnim(mSurfaceLeft, 0, mSurfaceLeft, 0);
             } else
             {

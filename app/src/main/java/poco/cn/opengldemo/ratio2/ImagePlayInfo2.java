@@ -3,8 +3,8 @@ package poco.cn.opengldemo.ratio2;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.graphics.RectF;
 import android.opengl.Matrix;
-import android.widget.ImageView;
 
 /**
  * Created by lgd on 2019/5/10.
@@ -13,20 +13,17 @@ import android.widget.ImageView;
  * 要保持不变形缩放缩放时x轴，y轴要乘相同的缩放因子, 在乘缩放因子之前要计算好在视图对应缩放值
  * initScaleX,initScaleY,在后续的变化这两个值是不变的，即使旋转了
  * <p>
- * 1 . 在这里计算以[-1,-1]的规划坐标系为标准，不考虑viewRatio的比例，谨考虑showRatio和VideoRatio
- * 在{@link FrameRender2} 再计算showRatio和 viewRatio的影响
- * 2 . showRatio是[-1,1]的限定区域  videoRatio在showRatio区域FIX_CENTER的缩放值为1f
- * 3. 计算FIX_CENTER和CENTER_CROP的缩放值,初始化矩阵
+ * 当前视区x轴[-1,1],y轴[-1,-1];
+ * 画幅是在视区的限制区域
  */
 public class ImagePlayInfo2
 {
     private final int width;
     private final int height;
 
-    private static final int MAX_SCALE = 2;  //CENTER_CROP 基础下可以再放大
+    private static final int MAX_SCALE = 4;  //CENTER_CROP 基础下可以再放大
 //    private final float showRatio;
 
-    public ImageView.ScaleType scaleType = ImageView.ScaleType.CENTER_CROP;
     private final float initScaleX;  //  根据宽高比， 初始在[-1,1]FIXE_CENTER的对应值
     private final float initScaleY;  //根据宽高比， 初始在[-1,1]FIXE_CENTER的对应值
     private float curScale = 1f;  //  整体缩放值，在[-1,-1]的FIX_CENTER，初始化是1f
@@ -37,15 +34,16 @@ public class ImagePlayInfo2
     @Deprecated  //没考虑旋转
     private float minScale = 1f;  // FIX_CENTER的缩放值，根据showRatio;
 
-    private float transitionX;
-    private float transitionY;
+    private float transitionX; //纹理中心点的x位移值
+    private float transitionY; //纹理中心点的y位移值
 
 
     public final float[] modelMatrix = new float[16];
     public final float[] texMatrix = new float[16];
     private boolean doingAnim;
 
-    private float showRatio = 1f;
+    private float showRatio = 1f; //画幅比例
+
     public ImagePlayInfo2(int width, int height)
     {
 //        this.showRatio = showRatio;
@@ -71,6 +69,13 @@ public class ImagePlayInfo2
         curAngle = 0f;
     }
 
+    /**
+     * FIX_CENRER的缩放值，
+     * FIX_CENTER要保持其中一条长边, 可能两种情况长边scaleX = 1f 或者长边scaleY =  1/showRatio，取可最小缩放的值,因为有一条边长即可
+     *
+     * @param angle
+     * @return
+     */
     public float getMinScale(float angle)
     {
         float scale = 1f;
@@ -79,15 +84,17 @@ public class ImagePlayInfo2
             if (angle % 180 == 0)
             {
                 scale = Math.min(1 / initScaleX, 1 / showRatio / initScaleY);
-            }else{
+            } else
+            {
                 scale = Math.min(1 / initScaleY, 1 / showRatio / initScaleX);
             }
-        }else
+        } else
         {
             if (angle % 180 == 0)
             {
                 scale = Math.min(showRatio / initScaleX, 1 / initScaleY);
-            }else{
+            } else
+            {
                 scale = Math.min(showRatio / initScaleY, 1 / initScaleX);
             }
         }
@@ -99,7 +106,14 @@ public class ImagePlayInfo2
         return getMinScale(curAngle);
     }
 
-
+    /**
+     * CENTER_CROP的缩放值
+     * CENTER_CROP 要保持一条短边，可能scaleX = 1f 或者scaleY = 1/showRatio；CENTER_CROP要保持一条短边,
+     * 可能两种情短边scaleX = 1/showRatio 或者短边scaleY =  1f，取最大可缩放的值? why，当前状态一条短边，另一条肯定是长边
+     *
+     * @param angle
+     * @return
+     */
     public float getMaxScale(float angle)
     {
         float scale = 1f;
@@ -108,15 +122,17 @@ public class ImagePlayInfo2
             if (angle % 180 == 0)
             {
                 scale = Math.max(1 / initScaleX, 1 / showRatio / initScaleY);
-            }else{
+            } else
+            {
                 scale = Math.max(1 / initScaleY, 1 / showRatio / initScaleX);
             }
-        }else
+        } else
         {
             if (angle % 180 == 0)
             {
                 scale = Math.max(showRatio / initScaleX, 1 / initScaleY);
-            }else{
+            } else
+            {
                 scale = Math.max(showRatio / initScaleY, 1 / initScaleX);
             }
         }
@@ -130,6 +146,8 @@ public class ImagePlayInfo2
 
     public void setShowRatio2(float showRatio)
     {
+        transitionX = 0;
+        transitionY = 0;
         this.showRatio = showRatio;
         curScale = getMaxScale(curAngle);
         initMatrix();
@@ -156,20 +174,22 @@ public class ImagePlayInfo2
         initMatrix();
     }
 
+    //https://blog.csdn.net/faithmy509/article/details/82705368
     private void initMatrix()
     {
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.setIdentityM(texMatrix, 0);
+        //根据前乘关系和opengl坐标系模式， Matrix.先写的后执行
+        Matrix.translateM(modelMatrix, 0, transitionX, transitionY, 0f);
         Matrix.rotateM(modelMatrix, 0, curAngle, 0f, 0f, 1f);
-        Matrix.scaleM(modelMatrix, 0, initScaleX, initScaleY, 1f);
-        Matrix.scaleM(modelMatrix, 0, curScale, curScale, 1f);
+        Matrix.scaleM(modelMatrix, 0, curScale * initScaleX, curScale * initScaleY, 1f);
     }
 
     /**
      * @param right
      * @param refresh
      */
-    public void rotate(boolean right,Runnable refresh)
+    public void rotate(boolean right, Runnable refresh)
     {
         if (doingAnim)
         {
@@ -188,16 +208,21 @@ public class ImagePlayInfo2
         float fromScale = curScale;
         float toScale = getMaxScale(toDegree);
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1f);
-        valueAnimator.setDuration(1000);
+        valueAnimator.setDuration(300);
+        float fromTransitionX = transitionX;
+        float fromTransitionY = transitionY;
         float finalFromDegree = fromDegree;
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
         {
             @Override
             public void onAnimationUpdate(ValueAnimator animation)
             {
-                float p = (float) animation.getAnimatedValue();
-                curScale = (toScale - fromScale) * p + fromScale;
-                curAngle = (int) ((toDegree - finalFromDegree) * p + finalFromDegree);
+                float f = (float) animation.getAnimatedValue();
+                curScale = (toScale - fromScale) * f + fromScale;
+                curAngle = (int) ((toDegree - finalFromDegree) * f + finalFromDegree);
+
+                transitionX = (1 - f ) * fromTransitionX;
+                transitionY = (1 - f ) * fromTransitionY;
                 initMatrix();
                 refresh.run();
             }
@@ -218,15 +243,19 @@ public class ImagePlayInfo2
     private void scaleAnim(float fromScale, float toScale, final Runnable refresh)
     {
         doingAnim = true;
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(fromScale, toScale);
+        float fromTransitionX = transitionX;
+        float fromTransitionY = transitionY;
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
         valueAnimator.setDuration(300);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
         {
             @Override
             public void onAnimationUpdate(ValueAnimator animation)
             {
-                float scale = (float) animation.getAnimatedValue();
-                curScale = scale;
+                float f = (float) animation.getAnimatedValue();
+                curScale = (toScale - fromScale) * f + fromScale;
+                transitionX = (1 - f ) * fromTransitionX;
+                transitionY = (1 - f ) * fromTransitionY;
                 initMatrix();
                 refresh.run();
 
@@ -266,5 +295,96 @@ public class ImagePlayInfo2
         int w = width;
         int h = height;
         return w / (float) h;
+    }
+
+    /**
+     * 纹理的显示框不允许超过showRatio框, 若小于showRatio框则居中
+     */
+    private void checkBound()
+    {
+        float x, y;
+        if (showRatio > 1)
+        {
+            x = 1f;
+            y = 1 / showRatio;
+        } else
+        {
+            y = 1f;
+            x = showRatio;
+        }
+        RectF showRect = new RectF();
+        showRect.set(-x, y, x, -y);
+
+        x = (curAngle % 180 == 0 ? initScaleX : initScaleY) * curScale;
+        y = (curAngle % 180 == 0 ? initScaleY : initScaleX) * curScale;
+        RectF curRect = new RectF();
+        curRect.set(-x, y, x, -y);
+
+        if (curRect.width() < showRect.width())
+        {
+            transitionX = 0;
+        } else if (curRect.left + transitionX > showRect.left)
+        {
+            transitionX = showRect.left - curRect.left;
+        } else if (curRect.right + transitionX < showRect.right)
+        {
+            transitionX = showRect.right - curRect.right;
+        }
+        // opengl 和android y轴翻转
+        if (-curRect.height() < -showRect.height())
+        {
+            transitionY = 0;
+        } else if (curRect.bottom + transitionY > showRect.bottom)
+        {
+            transitionY = showRect.bottom - curRect.bottom;
+        } else if (curRect.top + transitionY < showRect.top)
+        {
+            transitionY = showRect.top - curRect.top;
+        }
+    }
+
+    /**
+     * 为什么在缩放的情况下也保持对应的滑动值?
+     * 因为最后的矩阵先缩放后旋转后平移，平移不受缩放值影响
+     *
+     * @param x
+     * @param y
+     */
+    public void translate(float x, float y)
+    {
+        transitionX += x;
+        transitionY += y;
+        checkBound();
+        initMatrix();
+    }
+
+    /**
+     * 基准点缩放，首先对自身缩放值缩放， 然后对象的中心点会根据缩放比向基准点靠近或者远离
+     * 放大会远离，缩小会靠近
+     * <p>
+     * focusX * scale    换算成纹理缩放计算实际的位置
+     *
+     * @param scale
+     * @param focusX
+     * @param focusY
+     */
+    public void scale(float scale, float focusX, float focusY)
+    {
+        // 基准点缩放，
+        curScale *= scale;
+        float min = getMinScale();
+        float max = getMaxScale();
+        transitionX += (focusX * scale - transitionX) * (1 - scale);
+        transitionY += (focusY * scale - transitionY) * (1 - scale);
+        if (curScale < min)
+        {
+            curScale = min;
+        }
+        if (curScale > max * MAX_SCALE)
+        {
+            curScale = max * MAX_SCALE;
+        }
+        checkBound();
+        initMatrix();
     }
 }
