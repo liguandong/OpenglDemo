@@ -1,4 +1,4 @@
-package poco.cn.opengldemo.ratio2;
+package poco.cn.opengldemo.base;
 
 import android.content.Context;
 import android.graphics.Canvas;

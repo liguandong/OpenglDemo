@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ratio2.Main3Activity">
+    tools:context=".Main3Activity">
 
 
     <Button
@@ -73,15 +73,17 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:text="FULL_IN"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enterFrame"/>
+        />
 
     <Button
         android:id="@+id/fullOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="2dp"
         android:text="FULL_OUT"
         app:layout_constraintBottom_toBottomOf="@+id/fullIn"
         app:layout_constraintStart_toEndOf="@+id/fullIn"/>
@@ -90,7 +92,7 @@
         android:id="@+id/rotate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="2dp"
         android:text="Rotate"
         app:layout_constraintBottom_toBottomOf="@+id/fullOut"
         app:layout_constraintStart_toEndOf="@+id/fullOut"/>
@@ -99,40 +101,51 @@
         android:id="@+id/enterFrame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="2dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Enter_Frame"
+        app:layout_constraintBottom_toTopOf="@+id/fullIn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/glSurfaceView"/>
+        />
 
     <Button
         android:id="@+id/exitFrame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="2dp"
         android:text="Exit_Frame"
         app:layout_constraintStart_toEndOf="@+id/enterFrame"
         app:layout_constraintTop_toTopOf="@+id/enterFrame"/>
 
     <poco.cn.opengldemo.ratio2.GlFrameView2
         android:id="@+id/glSurfaceView"
-        app:layout_constraintRight_toLeftOf="parent"
-        app:layout_constraintLeft_toRightOf="parent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="100dp"
         app:layout_constraintDimensionRatio="1.0"
-        app:layout_constraintTop_toBottomOf="@+id/textView1_1">
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
     </poco.cn.opengldemo.ratio2.GlFrameView2>
 
     <Button
         android:id="@+id/changeImg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="2dp"
         android:text="changeImg"
         app:layout_constraintStart_toEndOf="@+id/exitFrame"
         app:layout_constraintTop_toTopOf="@+id/exitFrame"/>
+
+    <Button
+        android:id="@+id/fullScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="fullScreen"
+        app:layout_constraintBottom_toBottomOf="@+id/rotate"
+        app:layout_constraintStart_toEndOf="@+id/rotate"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

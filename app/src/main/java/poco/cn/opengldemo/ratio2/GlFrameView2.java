@@ -7,13 +7,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import poco.cn.opengldemo.base.BlackMaskView;
+import poco.cn.opengldemo.base.FrameNinePalacesView;
 import poco.cn.opengldemo.base.PlayRatio;
 import poco.cn.opengldemo.utils.ShareData;
 
@@ -46,7 +49,6 @@ public class GlFrameView2 extends FrameLayout
     private float mShowRatio;
     private FrameNinePalacesView ninePalacesView;
 
-
     public GlFrameView2(@NonNull Context context)
     {
         this(context, null);
@@ -56,6 +58,7 @@ public class GlFrameView2 extends FrameLayout
     {
         super(context, attrs);
         LayoutParams fl = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        fl.gravity = Gravity.CENTER;
         glSurfaceView = new GLSurfaceView(getContext());
         glSurfaceView.setEGLContextClientVersion(2);
         addView(glSurfaceView, fl);
@@ -79,8 +82,8 @@ public class GlFrameView2 extends FrameLayout
             public void onDrag(float dx, float dy)
             {
                 //也可以用 mSurfaceWidth 和  mSurfaceHeight
-                int min = Math.min(ninePalacesView.getRealWidth(),ninePalacesView.getRealHeight());
-                imagePlayInfo.translate(dx / min, -dy/min);
+                int min = Math.min(ninePalacesView.getRealWidth(), ninePalacesView.getRealHeight());
+                imagePlayInfo.translate(dx / min, -dy / min);
                 glSurfaceView.requestRender();
             }
 
@@ -88,7 +91,7 @@ public class GlFrameView2 extends FrameLayout
             public void onScaleChange(float scale, float focusX, float focusY)
             {
                 //也可以用 mSurfaceWidth 和  mSurfaceHeight
-                int min = Math.min(ninePalacesView.getRealWidth(),ninePalacesView.getRealHeight());
+                int min = Math.min(ninePalacesView.getRealWidth(), ninePalacesView.getRealHeight());
                 focusX = (focusX - ninePalacesView.getWidth() / 2) / (float) min;
                 focusY = (ninePalacesView.getHeight() / 2 - focusY) / (float) min;
                 imagePlayInfo.scale(scale, focusX, focusY);
@@ -201,6 +204,7 @@ public class GlFrameView2 extends FrameLayout
                 frameRender.setFullMode(true);
             }
         });
+        glSurfaceView.requestRender();
     }
 
     /**
@@ -250,9 +254,23 @@ public class GlFrameView2 extends FrameLayout
         mViewHeight = height;
     }
 
-    private float getShowRatio()
+    private float getFullScreenRotate()
     {
+        float rotate = 0;
+        if (isFullScreen)
+        {
+            float newViewRatio = ShareData.m_screenWidth / (float) ShareData.m_screenHeight;
+            if (getShowRatio(0) > 1 && newViewRatio < 1)
+            {
+                //旋转
+                rotate = 90;
+            }
+        }
+        return rotate;
+    }
 
+    private float getShowRatio(float angle)
+    {
         float showRatio;
         switch (mPlayRatio)
         {
@@ -274,7 +292,22 @@ public class GlFrameView2 extends FrameLayout
             default:
                 throw new IllegalArgumentException();
         }
+        if (angle % 180 != 0)
+        {
+            showRatio = 1 / showRatio; // 翻转
+        }
         return showRatio;
+    }
+
+    private float getShowRatio()
+    {
+        if (isFullScreen)
+        {
+            return getShowRatio(getFullScreenRotate());
+        } else
+        {
+            return getShowRatio(0);
+        }
     }
 
     /**
@@ -328,6 +361,7 @@ public class GlFrameView2 extends FrameLayout
                 mBlackMaskView.startAnim(mSurfaceLeft, 0, mSurfaceLeft, 0);
             } else
             {
+                ninePalacesView.setPadding(0, 0, 0, 0);
                 mBlackMaskView.startAnim(0, 0, 0, 0);
             }
 
@@ -341,17 +375,43 @@ public class GlFrameView2 extends FrameLayout
                 public void run()
                 {
                     frameRender.setLeftAndTop(showRatio, mSurfaceLeft, mLeftRatio, mSurfaceTop, mTopRatio);
-
                 }
             });
 
             if (imagePlayInfo != null)
             {
-                imagePlayInfo.setShowRatio2(showRatio);
+                imagePlayInfo.setShowRatio2(getShowRatio(0));
+                imagePlayInfo.setScreenRotate(-getFullScreenRotate());
 //                imagePlayInfo.init(viewRatio, showRatio);
 //                frameRender.setMatrix(imagePlayInfo.modelMatrix, imagePlayInfo.texMatrix);
             }
             glSurfaceView.requestRender();
+        }
+    }
+
+    boolean isFullScreen = false;
+    private ConstraintLayout.LayoutParams save;
+
+    public void enterFullScreen()
+    {
+//        glSurfaceView.animate().rotation(90).setDuration(5000).start();
+//        glSurfaceView.requestRender();
+//        glSurfaceView.requestRender();
+        isFullScreen = !isFullScreen;
+        if (isFullScreen)
+        {
+            save = (ConstraintLayout.LayoutParams) getLayoutParams();
+            ConstraintLayout.LayoutParams ll = new ConstraintLayout.LayoutParams(ShareData.m_screenWidth, ShareData.m_screenHeight);
+            ll.topMargin = 0;
+            setLayoutParams(ll);
+//            imagePlayInfo.setScreenRotate(true,mRefreshRunnable);
+        } else
+        {
+            if (save != null)
+            {
+                setLayoutParams(save);
+//                frameRender.setScreenRotate(0);
+            }
         }
     }
 }

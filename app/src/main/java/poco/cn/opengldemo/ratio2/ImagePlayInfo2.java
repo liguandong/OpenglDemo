@@ -6,9 +6,11 @@ import android.animation.ValueAnimator;
 import android.graphics.RectF;
 import android.opengl.Matrix;
 
+import poco.cn.opengldemo.ratio.ImagePlayInfo;
+
 /**
  * Created by lgd on 2019/5/10.
- * {@link poco.cn.opengldemo.ratio.ImagePlayInfo} 在旋转动画过程中变形了，原因是x和y轴不是同时乘以缩放因子
+ * {@link ImagePlayInfo} 在旋转动画过程中变形了，原因是x和y轴不是同时乘以缩放因子
  * <p>
  * 要保持不变形缩放缩放时x轴，y轴要乘相同的缩放因子, 在乘缩放因子之前要计算好在视图对应缩放值
  * initScaleX,initScaleY,在后续的变化这两个值是不变的，即使旋转了
@@ -146,11 +148,14 @@ public class ImagePlayInfo2
 
     public void setShowRatio2(float showRatio)
     {
-        transitionX = 0;
-        transitionY = 0;
-        this.showRatio = showRatio;
-        curScale = getMaxScale(curAngle);
-        initMatrix();
+        if (this.showRatio != showRatio)
+        {
+            transitionX = 0;
+            transitionY = 0;
+            this.showRatio = showRatio;
+            curScale = getMaxScale(curAngle);
+            initMatrix();
+        }
     }
 
     //没有考虑旋转角度
@@ -221,8 +226,8 @@ public class ImagePlayInfo2
                 curScale = (toScale - fromScale) * f + fromScale;
                 curAngle = (int) ((toDegree - finalFromDegree) * f + finalFromDegree);
 
-                transitionX = (1 - f ) * fromTransitionX;
-                transitionY = (1 - f ) * fromTransitionY;
+                transitionX = (1 - f) * fromTransitionX;
+                transitionY = (1 - f) * fromTransitionY;
                 initMatrix();
                 refresh.run();
             }
@@ -254,8 +259,8 @@ public class ImagePlayInfo2
             {
                 float f = (float) animation.getAnimatedValue();
                 curScale = (toScale - fromScale) * f + fromScale;
-                transitionX = (1 - f ) * fromTransitionX;
-                transitionY = (1 - f ) * fromTransitionY;
+                transitionX = (1 - f) * fromTransitionX;
+                transitionY = (1 - f) * fromTransitionY;
                 initMatrix();
                 refresh.run();
 
@@ -303,14 +308,15 @@ public class ImagePlayInfo2
     private void checkBound()
     {
         float x, y;
-        if (showRatio > 1)
+        float ratio = (screenRotate % 180 == 0) ? showRatio : 1 / showRatio;  //全屏播放把画幅限制框也旋转了
+        if (ratio > 1)
         {
             x = 1f;
-            y = 1 / showRatio;
+            y = 1 / ratio;
         } else
         {
             y = 1f;
-            x = showRatio;
+            x = ratio;
         }
         RectF showRect = new RectF();
         showRect.set(-x, y, x, -y);
@@ -386,5 +392,24 @@ public class ImagePlayInfo2
         }
         checkBound();
         initMatrix();
+    }
+
+    private float screenRotate;  //全屏播放的旋转角度
+    public void setScreenRotate(float rotate)
+    {
+        //原点旋转，要考虑位移
+        float r = 0;
+        if (rotate != screenRotate)
+        {
+            r = (rotate - screenRotate) % 360;
+        }
+        float tempX = transitionX;
+        double radians = Math.toRadians(r);
+        transitionX = (float) ((transitionX) * Math.cos(radians) - (transitionY) * Math.sin(radians));
+        transitionY = (float) ((transitionY) * Math.cos(radians) + (tempX) * Math.sin(radians));
+        screenRotate = rotate;
+        curAngle += r;
+        initMatrix();
+
     }
 }

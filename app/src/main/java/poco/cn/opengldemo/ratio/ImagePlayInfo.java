@@ -273,7 +273,7 @@ public class ImagePlayInfo
     }
 
 
-//    public void rotate(boolean right, float viewRatio, float showRatio, Runnable refresh)
+//    public void setScreenRotate(boolean right, float viewRatio, float showRatio, Runnable refresh)
 //    {
 //        if (doingAnim)
 //        {

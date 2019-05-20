@@ -1,4 +1,4 @@
-package poco.cn.opengldemo.ratio2;
+package poco.cn.opengldemo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,15 +8,15 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Group;
-import poco.cn.opengldemo.R;
+import poco.cn.opengldemo.ratio.GlFrameView;
 import poco.cn.opengldemo.utils.ShareData;
 import poco.cn.opengldemo.base.PlayRatio;
 
 // 根据画幅绘制图片，
-public class Main3Activity extends AppCompatActivity implements View.OnClickListener
+public class Main2Activity extends AppCompatActivity implements View.OnClickListener
 {
 
-    protected GlFrameView2 GLSurfaceView;
+    protected GlFrameView GLSurfaceView;
     protected Button textView11;
     protected Button textView169;
     protected Button textView916;
@@ -36,7 +36,7 @@ public class Main3Activity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.activity_main3);
+        super.setContentView(R.layout.activity_main2);
         initView();
     }
 
@@ -60,8 +60,8 @@ public class Main3Activity extends AppCompatActivity implements View.OnClickList
 
         } else if (view.getId() == R.id.textView235_1)
         {
-            GLSurfaceView.setPlayRatio(PlayRatio.RATIO_235_1);
-
+//            GLSurfaceView.setPlayRatio(PlayRatio.RATIO_235_1);
+            GLSurfaceView.requeRender();
         } else if (view.getId() == R.id.fullIn)
         {
             GLSurfaceView.scaleToMin();
@@ -71,6 +71,7 @@ public class Main3Activity extends AppCompatActivity implements View.OnClickList
 
         } else if (view.getId() == R.id.rotate)
         {
+//            GLSurfaceView.rotateFrame(false);
             GLSurfaceView.rotateFrame(false);
         } else if (view.getId() == R.id.enterFrame)
         {
@@ -88,30 +89,30 @@ public class Main3Activity extends AppCompatActivity implements View.OnClickList
 
     private void initView()
     {
-        GLSurfaceView = (GlFrameView2) findViewById(R.id.glSurfaceView);
+        GLSurfaceView = (GlFrameView) findViewById(R.id.glSurfaceView);
         textView11 = (Button) findViewById(R.id.textView1_1);
-        textView11.setOnClickListener(Main3Activity.this);
+        textView11.setOnClickListener(Main2Activity.this);
         textView169 = (Button) findViewById(R.id.textView16_9);
-        textView169.setOnClickListener(Main3Activity.this);
+        textView169.setOnClickListener(Main2Activity.this);
         textView916 = (Button) findViewById(R.id.textView9_16);
-        textView916.setOnClickListener(Main3Activity.this);
+        textView916.setOnClickListener(Main2Activity.this);
         textView34 = (Button) findViewById(R.id.textView3_4);
-        textView34.setOnClickListener(Main3Activity.this);
+        textView34.setOnClickListener(Main2Activity.this);
         textView2351 = (Button) findViewById(R.id.textView235_1);
-        textView2351.setOnClickListener(Main3Activity.this);
+        textView2351.setOnClickListener(Main2Activity.this);
         group = (Group) findViewById(R.id.group);
         fullIn = (Button) findViewById(R.id.fullIn);
-        fullIn.setOnClickListener(Main3Activity.this);
+        fullIn.setOnClickListener(Main2Activity.this);
         fullOut = (Button) findViewById(R.id.fullOut);
-        fullOut.setOnClickListener(Main3Activity.this);
+        fullOut.setOnClickListener(Main2Activity.this);
         rotate = (Button) findViewById(R.id.rotate);
-        rotate.setOnClickListener(Main3Activity.this);
+        rotate.setOnClickListener(Main2Activity.this);
         enterFrame = (Button) findViewById(R.id.enterFrame);
-        enterFrame.setOnClickListener(Main3Activity.this);
+        enterFrame.setOnClickListener(Main2Activity.this);
         exitFrame = (Button) findViewById(R.id.exitFrame);
-        exitFrame.setOnClickListener(Main3Activity.this);
+        exitFrame.setOnClickListener(Main2Activity.this);
         changeImg = (Button) findViewById(R.id.changeImg);
-        changeImg.setOnClickListener(Main3Activity.this);
+        changeImg.setOnClickListener(Main2Activity.this);
 
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId[0]);

@@ -1,26 +1,30 @@
 package poco.cn.opengldemo;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import poco.cn.opengldemo.ratio.Main2Activity;
-import poco.cn.opengldemo.ratio2.Main3Activity;
 import poco.cn.opengldemo.utils.ShareData;
-import poco.cn.opengldemo.video.MainActivity;
 
 public class EntryActivity extends AppCompatActivity
 {
 
     private RecyclerView mList;
     private ArrayList<MenuBean> data;
+    private String[] must;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -32,12 +36,35 @@ public class EntryActivity extends AppCompatActivity
         mList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         data = new ArrayList<>();
         add("视频播放", MainActivity.class);
-        add("画幅测试", Main2Activity.class);
-        add("画幅测试2", Main3Activity.class);
+        add("画幅测试1", Main2Activity.class);
+        add("画幅测试2（改善版）", Main3Activity.class);
 //        add("颜色混合",BlendActivity.class);
         mList.setAdapter(new MenuAdapter());
+
+        must = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE};
+        boolean hasPerminsion = true;
+        for (String p : must)
+        {
+            if (ContextCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_GRANTED)
+            {
+                hasPerminsion = false;
+                //请求权限
+
+            }
+        }
+        if (false)
+        {
+            ActivityCompat.requestPermissions(this, must, 1);
+        }
+
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
     private void add(String name, Class<?> clazz)
     {
         MenuBean bean = new MenuBean();
@@ -101,9 +128,22 @@ public class EntryActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                int position = (int) v.getTag();
-                MenuBean bean = data.get(position);
-                startActivity(new Intent(EntryActivity.this, bean.clazz));
+                boolean hasPerminsion = true;
+                for (String p : must)
+                {
+                    if (ContextCompat.checkSelfPermission(EntryActivity.this, p) != PackageManager.PERMISSION_GRANTED){
+                        hasPerminsion = false;
+                        //请求权限
+                    }
+                }
+                if(hasPerminsion)
+                {
+                    int position = (int) v.getTag();
+                    MenuBean bean = data.get(position);
+                    startActivity(new Intent(EntryActivity.this, bean.clazz));
+                }else{
+                    Toast.makeText(EntryActivity.this, "请开启权限", Toast.LENGTH_SHORT).show();
+                }
             }
         };
 

@@ -1,4 +1,4 @@
-package poco.cn.opengldemo.ratio;
+package poco.cn.opengldemo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,15 +8,15 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Group;
-import poco.cn.opengldemo.R;
-import poco.cn.opengldemo.utils.ShareData;
 import poco.cn.opengldemo.base.PlayRatio;
+import poco.cn.opengldemo.ratio2.GlFrameView2;
+import poco.cn.opengldemo.utils.ShareData;
 
 // 根据画幅绘制图片，
-public class Main2Activity extends AppCompatActivity implements View.OnClickListener
+public class Main3Activity extends AppCompatActivity implements View.OnClickListener
 {
 
-    protected GlFrameView GLSurfaceView;
+    protected GlFrameView2 GLSurfaceView;
     protected Button textView11;
     protected Button textView169;
     protected Button textView916;
@@ -29,14 +29,16 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
     protected Button enterFrame;
     protected Button exitFrame;
     protected Button changeImg;
+    protected Button fullScreen;
 
-    int[] resId = new int[]{R.drawable.img1_1,R.drawable.img16_9,R.drawable.img9_16,R.drawable.img3_4,R.drawable.img_test};
+    int[] resId = new int[]{R.drawable.img1_1, R.drawable.img16_9, R.drawable.img9_16, R.drawable.img3_4, R.drawable.img_test};
     int index = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.activity_main2);
+        super.setContentView(R.layout.activity_main3);
         initView();
     }
 
@@ -61,7 +63,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         } else if (view.getId() == R.id.textView235_1)
         {
             GLSurfaceView.setPlayRatio(PlayRatio.RATIO_235_1);
-
+//            GLSurfaceView.setRotation((GLSurfaceView.getRotation() + 90) % 360);
         } else if (view.getId() == R.id.fullIn)
         {
             GLSurfaceView.scaleToMin();
@@ -80,44 +82,49 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
             GLSurfaceView.exitFrameMode();
         } else if (view.getId() == R.id.changeImg)
         {
-            index = (index+1)%resId.length;
+            index = (index + 1) % resId.length;
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId[index]);
             GLSurfaceView.setBitmap(bitmap);
+        } else if (view.getId() == R.id.fullScreen)
+        {
+            GLSurfaceView.enterFullScreen();
         }
     }
 
     private void initView()
     {
-        GLSurfaceView = (GlFrameView) findViewById(R.id.glSurfaceView);
+        GLSurfaceView = (GlFrameView2) findViewById(R.id.glSurfaceView);
         textView11 = (Button) findViewById(R.id.textView1_1);
-        textView11.setOnClickListener(Main2Activity.this);
+        textView11.setOnClickListener(Main3Activity.this);
         textView169 = (Button) findViewById(R.id.textView16_9);
-        textView169.setOnClickListener(Main2Activity.this);
+        textView169.setOnClickListener(Main3Activity.this);
         textView916 = (Button) findViewById(R.id.textView9_16);
-        textView916.setOnClickListener(Main2Activity.this);
+        textView916.setOnClickListener(Main3Activity.this);
         textView34 = (Button) findViewById(R.id.textView3_4);
-        textView34.setOnClickListener(Main2Activity.this);
+        textView34.setOnClickListener(Main3Activity.this);
         textView2351 = (Button) findViewById(R.id.textView235_1);
-        textView2351.setOnClickListener(Main2Activity.this);
+        textView2351.setOnClickListener(Main3Activity.this);
         group = (Group) findViewById(R.id.group);
         fullIn = (Button) findViewById(R.id.fullIn);
-        fullIn.setOnClickListener(Main2Activity.this);
+        fullIn.setOnClickListener(Main3Activity.this);
         fullOut = (Button) findViewById(R.id.fullOut);
-        fullOut.setOnClickListener(Main2Activity.this);
+        fullOut.setOnClickListener(Main3Activity.this);
         rotate = (Button) findViewById(R.id.rotate);
-        rotate.setOnClickListener(Main2Activity.this);
+        rotate.setOnClickListener(Main3Activity.this);
         enterFrame = (Button) findViewById(R.id.enterFrame);
-        enterFrame.setOnClickListener(Main2Activity.this);
+        enterFrame.setOnClickListener(Main3Activity.this);
         exitFrame = (Button) findViewById(R.id.exitFrame);
-        exitFrame.setOnClickListener(Main2Activity.this);
+        exitFrame.setOnClickListener(Main3Activity.this);
         changeImg = (Button) findViewById(R.id.changeImg);
-        changeImg.setOnClickListener(Main2Activity.this);
+        changeImg.setOnClickListener(Main3Activity.this);
 
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId[0]);
         GLSurfaceView.setBitmap(bitmap);
         GLSurfaceView.setViewSize(ShareData.m_screenWidth, (int) (ShareData.m_screenWidth / 1.3f));
         GLSurfaceView.setPlayRatio(PlayRatio.RATIO_16_9);
+        fullScreen = (Button) findViewById(R.id.fullScreen);
+        fullScreen.setOnClickListener(Main3Activity.this);
     }
 
 

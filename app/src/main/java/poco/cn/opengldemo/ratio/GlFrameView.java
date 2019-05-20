@@ -3,6 +3,7 @@ package poco.cn.opengldemo.ratio;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
@@ -276,5 +277,16 @@ public class GlFrameView extends FrameLayout
             }
             glSurfaceView.requestRender();
         }
+    }
+
+    boolean isFull = false;
+    public void requeRender()
+    {
+//        glSurfaceView.requestRender();
+        glSurfaceView.animate().rotation(90).setDuration(5000).start();
+        LayoutParams fl = (LayoutParams) glSurfaceView.getLayoutParams();
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0,1);
+        valueAnimator.setDuration(3000);
+        valueAnimator.start();
     }
 }

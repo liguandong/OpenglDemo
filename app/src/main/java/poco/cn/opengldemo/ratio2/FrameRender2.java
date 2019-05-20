@@ -207,6 +207,7 @@ public class FrameRender2 implements GLSurfaceView.Renderer
 //            Matrix.multiplyMM(mTempModelMatrix, 0, mModelMatrix, 0, mTempModelMatrix, 0);
             Matrix.multiplyMM(mTempModelMatrix, 0, mImagePlayInfo.modelMatrix, 0, mImagePlayInfo.texMatrix, 0);
             Matrix.multiplyMM(mTempTexMatrix, 0, mTempTexMatrix, 0, mImagePlayInfo.texMatrix, 0);
+
             Matrix.multiplyMM(mTempModelMatrix, 0, mProjectMatrix, 0, mTempModelMatrix, 0);
             if (!isFullMode)
             {
@@ -230,4 +231,5 @@ public class FrameRender2 implements GLSurfaceView.Renderer
     {
         mImagePlayInfo = playInfo;
     }
+
 }

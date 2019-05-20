@@ -1,15 +1,9 @@
-package poco.cn.opengldemo.video;
+package poco.cn.opengldemo;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import poco.cn.opengldemo.R;
 import poco.cn.opengldemo.utils.ShareData;
 import poco.cn.opengldemo.video.view.GLVideoViewV2;
 import poco.cn.opengldemo.video.view.VideoBaseInfo;
@@ -38,24 +32,6 @@ public class MainActivity extends AppCompatActivity
     private void initView()
     {
         mVideoView = (GLVideoViewV2) findViewById(R.id.mVideoView);
-
-        must = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE};
-        boolean hasPerminsion = true;
-        for (String p : must)
-        {
-            if (ContextCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_GRANTED){
-                hasPerminsion = false;
-                //请求权限
-
-            }
-        }
-        if(hasPerminsion){
-            startVideo();
-        }else
-        {
-            ActivityCompat.requestPermissions(this, must, 1);
-        }
 
     }
 
@@ -89,23 +65,5 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        boolean hasPerminsion = true;
-        for (String p : must)
-        {
-            if (ContextCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_GRANTED){
-                hasPerminsion = false;
-                //请求权限
-            }
-        }
-        if(hasPerminsion){
-            startVideo();
-        }
-
     }
 }
