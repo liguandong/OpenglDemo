@@ -53,7 +53,7 @@ public class EntryActivity extends AppCompatActivity
 
             }
         }
-        if (hasPerminsion)
+        if (!hasPerminsion)
         {
             ActivityCompat.requestPermissions(this, must, 1);
         }
