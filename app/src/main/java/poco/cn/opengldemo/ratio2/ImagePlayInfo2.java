@@ -105,7 +105,7 @@ public class ImagePlayInfo2
 
     public float getMinScale()
     {
-        return getMinScale(curAngle);
+        return getMinScale(curAngle - screenRotate);
     }
 
     /**
@@ -143,7 +143,7 @@ public class ImagePlayInfo2
 
     public float getMaxScale()
     {
-        return getMaxScale(curAngle);
+        return getMaxScale(curAngle - screenRotate);
     }
 
     public void setShowRatio2(float showRatio)
