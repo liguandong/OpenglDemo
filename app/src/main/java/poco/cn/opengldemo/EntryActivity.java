@@ -38,6 +38,7 @@ public class EntryActivity extends AppCompatActivity
         add("视频播放", MainActivity.class);
         add("画幅测试1", Main2Activity.class);
         add("画幅测试2（改善版）", Main3Activity.class);
+        add("多窗口", Main6Activity.class);
 //        add("颜色混合",BlendActivity.class);
         mList.setAdapter(new MenuAdapter());
 

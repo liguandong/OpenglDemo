@@ -24,11 +24,11 @@ public abstract class BaseDraw {
     private int mProgram = 0;
     private Drawable2d mDrawable2d = new Drawable2d();
 
-    private int aPositionLoc;
-    private int aTextureCoordLoc;
+    protected int aPositionLoc;
+    protected int aTextureCoordLoc;
 
-    private int uMVPMatrixLoc;
-    private int uTexMatrixLoc;
+    protected int uMVPMatrixLoc;
+    protected int uTexMatrixLoc;
 
     public BaseDraw(Context context) {
         mContext = context;
