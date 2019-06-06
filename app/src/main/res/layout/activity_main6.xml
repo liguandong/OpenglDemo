@@ -100,19 +100,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="0dp"
         android:text="circle"
-        app:layout_constraintStart_toEndOf="@+id/roundedRectangle"
-        app:layout_constraintTop_toTopOf="@+id/roundedRectangle"/>
+        app:layout_constraintStart_toEndOf="@+id/roundedT"
+        app:layout_constraintTop_toTopOf="@+id/roundedT"/>
 
     <Button
-        android:id="@+id/roundedRectangle"
+        android:id="@+id/rounded"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="0dp"
-        android:text="roundedRectangle"
+        android:text="roundedW"
         app:layout_constraintStart_toEndOf="@+id/square"
+        app:layout_constraintTop_toTopOf="@+id/square"/>
+
+    <Button
+        android:id="@+id/roundedT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="roundedT"
+        app:layout_constraintStart_toEndOf="@+id/rounded"
         app:layout_constraintTop_toTopOf="@+id/square"/>
 
 

@@ -33,10 +33,15 @@ public class RounderDraw extends TextureDraw
         this.radius = radius;
     }
 
+    float ratio = -1;
+    public void setRatio(float ratio)
+    {
+        this.ratio = ratio;
+    }
 
     private float getFixRadius()
     {
-        float ratio = mSurfaceW / (float) mSurfaceH;
+        float ratio = this.ratio != -1 ? this.ratio :  mSurfaceW / (float) mSurfaceH;
         float r = radius;
         if(ratio < 1)
         {

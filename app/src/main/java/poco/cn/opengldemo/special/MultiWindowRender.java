@@ -36,6 +36,7 @@ public class MultiWindowRender implements GLSurfaceView.Renderer
 
     private int type = 2;
     private RounderWindowDraw rounderWindowDraw;
+    private RounderTextureDraw RounderTextureDraw;
 
     //    RenderInfo
     public MultiWindowRender(Context context)
@@ -52,6 +53,7 @@ public class MultiWindowRender implements GLSurfaceView.Renderer
         squareWindowDraw = new SquareWindowDraw(context);
         cirCleWindowDraw = new CirCleWindowDraw(context);
         rounderWindowDraw = new RounderWindowDraw(context);
+        RounderTextureDraw = new RounderTextureDraw(context);
         if (mTextureId == GlUtil.NO_TEXTURE && bitmap != null)
         {
             mTextureId = GlUtil.createTexture(bitmap);
@@ -67,6 +69,7 @@ public class MultiWindowRender implements GLSurfaceView.Renderer
         squareWindowDraw.setViewSize(mViewWidth, mViewHeight);
         cirCleWindowDraw.setViewSize(mViewWidth, mViewHeight);
         rounderWindowDraw.setViewSize(mViewWidth, mViewHeight);
+        RounderTextureDraw.setViewSize(mViewWidth, mViewHeight);
         GLES20.glViewport(0, 0, mViewWidth, mViewHeight);
         float ratio = mViewWidth / (float) mViewHeight;
         if (ratio < 1)
@@ -107,9 +110,10 @@ public class MultiWindowRender implements GLSurfaceView.Renderer
 //            cirCleWindowDraw.draw(mTextureId, mTextureId, mMatrixTools.getFinalMatrix(mTempModelMatrix), mTexMatrix);
 //            cirCleWindowDraw.draw(mTextureId, mTextureId, mMatrixTools.getFinalMatrix(mTempModelMatrix), mTexMatrix);
             cirCleWindowDraw.draw(mTextureId, mTextureId, mMatrixTools.getFinalMatrix(mTempModelMatrix), mTexMatrix);
-        }else{
+        }else if(type == 3){
             rounderWindowDraw.draw(mTextureId, mTextureId, mMatrixTools.getFinalMatrix(mTempModelMatrix), mTexMatrix);
-
+        }else{
+            RounderTextureDraw.draw(mTextureId, mTextureId,bitmap.getWidth()/(float)bitmap.getHeight(), mMatrixTools.getFinalMatrix(mTempModelMatrix), mTexMatrix);
         }
     }
 
@@ -174,6 +178,7 @@ public class MultiWindowRender implements GLSurfaceView.Renderer
         squareWindowDraw.setScale(scaleX, scaleY);
         cirCleWindowDraw.setScale(scaleX, scaleY);
         rounderWindowDraw.setScale(scaleX, scaleY);
+        RounderTextureDraw.setScale(scaleX, scaleY);
     }
 
     public void setType(int i)
@@ -184,5 +189,6 @@ public class MultiWindowRender implements GLSurfaceView.Renderer
     public void setRadius(float r)
     {
         rounderWindowDraw.setRadius(r);
+        RounderTextureDraw.setRadius(r);
     }
 }

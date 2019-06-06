@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">OpenglDemo</string>
     <string name="title_activity_main3">Main3Activity</string>
+    <string name="title_activity_main7">Main7Activity</string>
 </resources>

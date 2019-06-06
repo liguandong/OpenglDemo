@@ -23,6 +23,7 @@ public class Main6Activity extends AppCompatActivity implements View.OnClickList
     protected Button square;
     protected Button circle;
     protected Button roundedRectangle;
+    protected Button roundedT;
 
     int[] resId = new int[]{R.drawable.img1_1, R.drawable.img16_9, R.drawable.img9_16, R.drawable.img3_4, R.drawable.img_test};
     int index = 0;
@@ -63,10 +64,13 @@ public class Main6Activity extends AppCompatActivity implements View.OnClickList
         {
             glSurfaceView.setType(2);
 
-        } else if (view.getId() == R.id.roundedRectangle)
+        } else if (view.getId() == R.id.rounded)
         {
             glSurfaceView.setType(3);
 
+        } else if (view.getId() == R.id.roundedT)
+        {
+            glSurfaceView.setType(4);
         }
     }
 
@@ -131,7 +135,7 @@ public class Main6Activity extends AppCompatActivity implements View.OnClickList
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
                 float a = progress / (float) seekBar.getMax();
-                glSurfaceView.setRadius(a/2);
+                glSurfaceView.setRadius(a);
             }
 
             @Override
@@ -152,8 +156,10 @@ public class Main6Activity extends AppCompatActivity implements View.OnClickList
         square.setOnClickListener(Main6Activity.this);
         circle = (Button) findViewById(R.id.circle);
         circle.setOnClickListener(Main6Activity.this);
-        roundedRectangle = (Button) findViewById(R.id.roundedRectangle);
+        roundedRectangle = (Button) findViewById(R.id.rounded);
         roundedRectangle.setOnClickListener(Main6Activity.this);
+        roundedT = (Button) findViewById(R.id.roundedT);
+        roundedT.setOnClickListener(Main6Activity.this);
 
     }
 }

@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <application
         android:name=".MyApplication"
@@ -14,12 +15,20 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Main6Activity"
-                  android:screenOrientation="portrait">
-
+        <activity android:name=".Main8Activity">
         </activity>
-        <activity android:name=".Main5Activity"
-                  android:screenOrientation="portrait">
+        <activity
+            android:name=".Main7Activity"
+            android:label="@string/title_activity_main7"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".Main6Activity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Main5Activity"
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".Main4Activity">
         </activity>
