@@ -41,6 +41,7 @@ public class EntryActivity extends AppCompatActivity
         add("多窗口", Main6Activity.class);
         add("录音", Main7Activity.class);
         add("多音频播放", Main8Activity.class);
+        add("斜分屏", Main9Activity.class);
 //        add("颜色混合",BlendActivity.class);
         mList.setAdapter(new MenuAdapter());
 
