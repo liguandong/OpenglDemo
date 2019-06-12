@@ -160,7 +160,7 @@ public class Main7Activity extends AppCompatActivity implements View.OnClickList
                     //请求权限
                 }
             }
-            if (hasPerminsion)
+            if (!hasPerminsion)
             {
                 Toast.makeText(Main7Activity.this, "请开启权限", Toast.LENGTH_SHORT).show();
                 finish();
