@@ -1,6 +1,7 @@
 package poco.cn.opengldemo;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -14,10 +15,13 @@ import java.io.File;
 import java.io.IOException;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import cn.poco.soundtouch.SoundTouch;
 import poco.cn.opengldemo.audio.VoiceOverRecordMgr;
+import poco.cn.opengldemo.utils.FileUtil;
 
 public class Main7Activity extends AppCompatActivity implements View.OnClickListener
 {
@@ -27,11 +31,14 @@ public class Main7Activity extends AppCompatActivity implements View.OnClickList
     protected Button playAudio;
     protected Button stopPlay;
     protected SeekBar seekBar;
+    protected Button change;
 
     private VoiceOverRecordMgr voiceOverRecordMgr;
     private String outPath;
+    private String playPath;
     private MediaPlayer mediaPlayer;
     private String[] must;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -39,7 +46,15 @@ public class Main7Activity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main7);
         initView();
-        outPath = Environment.getExternalStorageDirectory() + File.separator + "openglDemo" + File.separator + "audio.aac";
+        String parent = Environment.getExternalStorageDirectory() + File.separator + "OpenglDemo";
+        File file = new File(parent);
+        if (!file.exists())
+        {
+            file.mkdir();
+        }
+        outPath = Environment.getExternalStorageDirectory() + File.separator + "OpenglDemo" + File.separator + "audio.aac";
+
+        playPath = outPath;
         voiceOverRecordMgr = new VoiceOverRecordMgr();
         voiceOverRecordMgr.setListener(new VoiceOverRecordMgr.OnRecordListener()
         {
@@ -48,6 +63,8 @@ public class Main7Activity extends AppCompatActivity implements View.OnClickList
             {
                 startRecord.setText("startRecord");
 
+
+                change();
             }
 
             @Override
@@ -88,6 +105,44 @@ public class Main7Activity extends AppCompatActivity implements View.OnClickList
         {
             ActivityCompat.requestPermissions(this, must, 1);
         }
+    }
+
+    private void change()
+    {
+        AlertDialog.Builder Builder = new AlertDialog.Builder(Main7Activity.this);
+        Builder.setTitle("是否变声");
+        Builder.setNegativeButton("否", null);
+        Builder.setPositiveButton("是", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                new Thread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        playPath = Environment.getExternalStorageDirectory() + File.separator + "openglDemo" + File.separator + "audio1.aac";
+                        String tempIn = Environment.getExternalStorageDirectory() + File.separator + "openglDemo" + File.separator + "tempIn.wav";
+                        String tempOut = Environment.getExternalStorageDirectory() + File.separator + "openglDemo" + File.separator + "tempOut.wav";
+                        FileUtil.deleteFile(tempIn);
+                        FileUtil.deleteFile(tempOut);
+                        SoundTouch soundTouch = new SoundTouch();
+                        soundTouch.setTempo(100);
+                        soundTouch.setPitchSemiTones(5);
+
+                        FileUtil.deleteFile(playPath);
+                        int a = soundTouch.processFile(outPath, playPath, tempIn, tempOut);
+                        soundTouch.close();
+//                                Toast.makeText(Main7Activity.this, "成功"+a, Toast.LENGTH_SHORT).show();
+//                        FileUtil.deleteFile(tempIn);
+//                        FileUtil.deleteFile(tempOut);
+
+                    }
+                }).start();
+            }
+        });
+        Builder.create().show();
     }
 
     @Override
@@ -133,7 +188,7 @@ public class Main7Activity extends AppCompatActivity implements View.OnClickList
             try
             {
                 mediaPlayer.reset();
-                mediaPlayer.setDataSource(outPath);
+                mediaPlayer.setDataSource(playPath);
                 mediaPlayer.prepare();
                 mediaPlayer.start();
                 playAudio.setText("playing");
@@ -145,6 +200,9 @@ public class Main7Activity extends AppCompatActivity implements View.OnClickList
         {
             mediaPlayer.stop();
             playAudio.setText("playAudio");
+        } else if (view.getId() == R.id.change)
+        {
+            change();
         }
     }
 
@@ -164,7 +222,7 @@ public class Main7Activity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
-                float a = progress/(float)seekBar.getMax();
+                float a = progress / (float) seekBar.getMax();
                 voiceOverRecordMgr.setVolume(a);
             }
 
@@ -180,5 +238,7 @@ public class Main7Activity extends AppCompatActivity implements View.OnClickList
 
             }
         });
+        change = (Button) findViewById(R.id.change);
+        change.setOnClickListener(Main7Activity.this);
     }
 }

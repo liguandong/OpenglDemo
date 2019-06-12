@@ -50,6 +50,17 @@ public class VoiceOverRecordMgr
 //            iRecord.release();
         }
         handler.removeCallbacks(mTimeRunnable);
+        handler.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (mListener != null)
+                {
+                    mListener.onRecordFinish(outPath);
+                }
+            }
+        });
     }
 
     public void clear()
@@ -69,10 +80,6 @@ public class VoiceOverRecordMgr
                 if (progress >= 1f)
                 {
                     stopRecord();
-                    if (mListener != null)
-                    {
-                        mListener.onRecordFinish(outPath);
-                    }
                     return;
                 } else
                 {

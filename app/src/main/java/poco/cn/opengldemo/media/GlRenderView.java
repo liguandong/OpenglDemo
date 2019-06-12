@@ -1,6 +1,7 @@
 package poco.cn.opengldemo.media;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.opengl.GLES20;
@@ -27,10 +28,10 @@ public class GlRenderView extends FrameLayout
     private MyRenderer renderer;
     private MediaPlayer mediaPlayer;
     private GLSurface glSurface;
-    private final VideoBaseInfo info1;
-    private final VideoBaseInfo info16;
-    private final VideoBaseInfo info19;
-    private final VideoBaseInfo curInfo;
+    private VideoBaseInfo info1;
+    private VideoBaseInfo info16;
+    private VideoBaseInfo info19;
+    private VideoBaseInfo curInfo;
 
 
     public GlRenderView(@NonNull Context context, @Nullable AttributeSet attrs)
@@ -49,6 +50,12 @@ public class GlRenderView extends FrameLayout
         info1 = VideoBaseInfo.get("/storage/emulated/0/DCIM/InterPhoto/InterPhoto_1556093181910.mp4");
         info16 = VideoBaseInfo.get("/storage/emulated/0/DCIM/InterPhoto/InterPhoto_1556093222209.mp4");
         info19 = VideoBaseInfo.get("/storage/emulated/0/DCIM/InterPhoto/InterPhoto_1556093247104.mp4");
+
+        info1 = new VideoBaseInfo();
+        info1.path = "video_title.mp4";
+        info1.width = 1920;
+        info1.height = 1080;
+
 //        mediaPlayer.setDataSource();
         curInfo = info1;
     }
@@ -90,7 +97,13 @@ public class GlRenderView extends FrameLayout
                     mediaPlayer.setSurface(glSurface.getSurface());
                     try
                     {
-                        mediaPlayer.setDataSource(curInfo.path);
+//                        mediaPlayer.setDataSource(curInfo.path);
+//                        mediaPlayer.setDataSource(curInfo.path);
+//                        AssetFileDescriptor assetFileDescriptor = new AssetFileDescriptor();
+                        AssetFileDescriptor afd = getContext().getAssets().openFd(curInfo.path);
+//                        AssetFileDescriptor afd = getResources().getAssets().openFd("public.mkv");
+                        mediaPlayer.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+//                        mediaPlayer.setDataSource(des);
                         mediaPlayer.setLooping(true);
                         mediaPlayer.setOnInfoListener(new MediaPlayer.OnInfoListener()
                         {

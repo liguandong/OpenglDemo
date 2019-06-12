@@ -128,4 +128,12 @@ public class Main8Activity extends AppCompatActivity implements View.OnClickList
 
 
     }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        audioPlayer.pause();
+        audioPlayer.release();
+    }
 }
